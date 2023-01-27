@@ -1,5 +1,36 @@
 import { useEffect, useState } from 'react'
 
+const Filter = ({ handleFunction }) => (
+    <div>
+        <label htmlFor="filter">filter shown with </label>
+        <input id="filter" onChange={handleFunction} />
+    </div>
+)
+
+const AddNewPerson = ({ handleSubmit, handleName, handleNumber, personText }) => (
+    <div>
+        <form onSubmit={handleSubmit}>
+            <div>
+                <label htmlFor="name">name: </label>
+                <input id="name" value={personText.name} onChange={handleName} />
+            </div>
+            <div>
+                <label htmlFor="number">number: </label>
+                <input id="number" value={personText.number} onChange={handleNumber} />
+            </div>
+            <div>
+                <button type="submit">add</button>
+            </div>
+        </form>
+    </div>
+)
+
+const List = ({list}) => (
+    <div>
+        {list.map(item => <p key={item.name}>{item.name}: {item.number}</p>)}
+    </div>
+)
+
 const App = () => {
     const [persons, setPersons] = useState([
         { name: 'Arto Hellas', number: '040-123456', id: 0 },
@@ -9,8 +40,8 @@ const App = () => {
     ])
     const [personsToShow, setPersonsToShow] = useState([])
     useEffect(() => {
-        setPersonsToShow(persons)
-    }, [])
+        filterText()
+    }, [persons])
 
     const emptyPerson = {
         name: '',
@@ -28,40 +59,32 @@ const App = () => {
     }
 
     const filterText = (e) => {
-        if (e.target.value === "") {
+        if (e === undefined || e.target.value === "") {
             setPersonsToShow(persons)
         } else {
             setPersonsToShow(persons.filter(person => person.name.toLowerCase().includes(e.target.value.toLowerCase())))
         }
     }
 
+    const updateTempName = (e) => setNewPerson({...newPerson, name: e.target.value})
+    const updateTempNumber = (e) => setNewPerson({...newPerson, number: e.target.value})
+
     return (
         <div>
             <h1>Phonebook</h1>
-            <div>
-                <label htmlFor="filter">filter shown with </label>
-                <input id="filter" onChange={filterText} />
-            </div>
-            <div>
-                <h2>Add new</h2>
-                <form onSubmit={addPerson}>
-                    <div>
-                        <label htmlFor="name">name: </label>
-                        <input id="name" value={newPerson.name} onChange={(e) => setNewPerson({...newPerson, name: e.target.value})} />
-                    </div>
-                    <div>
-                        <label htmlFor="number">number: </label>
-                        <input id="number" value={newPerson.number} onChange={(e) => setNewPerson({...newPerson, number: e.target.value})} />
-                    </div>
-                    <div>
-                        <button type="submit">add</button>
-                    </div>
-                </form>
-            </div>
-            <div>
-                <h2>Numbers</h2>
-                {personsToShow.map(person => <p key={person.name}>{person.name}: {person.number}</p>)}
-            </div>
+            <Filter handleFunction={filterText} />
+            <h2>Add new</h2>
+            <AddNewPerson
+                handleSubmit={addPerson}
+                handleName={updateTempName}
+                handleNumber={updateTempNumber}
+                personText={{
+                    name: newPerson.name,
+                    number: newPerson.number
+                }}
+            />
+            <h2>Numbers</h2>
+            <List list={personsToShow} />
         </div>
     )
 }
