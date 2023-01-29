@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios';
+import phonebookService from './services/phonebook'
 
 const Filter = ({ handleFunction }) => (
     <div>
@@ -26,27 +26,35 @@ const AddNewPerson = ({ handleSubmit, handleName, handleNumber, personText }) =>
     </div>
 )
 
-const List = ({list}) => (
+const List = ({list, handleClick}) => (
     <div>
-        {list.map(item => <p key={item.name}>{item.name}: {item.number}</p>)}
+        {list.map(item => (
+            <div key={item.id} style={{"display": "flex"}}>
+                <p>{item.name}: {item.number}</p>
+                <button onClick={() => handleClick(item.id)}>Remove</button>
+            </div>
+        ))}
     </div>
 )
 
 const App = () => {
+    // Initializing phonebook array and filling it from db
     const [persons, setPersons] = useState([])
     useEffect(() => {
-        axios
-            .get("http://localhost:3001/persons")
-            .then(response =>
-                setPersons(response.data)    
+        phonebookService.getAll()
+            .then(fetchedPersons =>
+                setPersons(fetchedPersons)    
             )
     },[])
+
+    // Initializing visible persons after filter
     const [personsToShow, setPersonsToShow] = useState([])
     useEffect(() => {
         filterText()
     // eslint-disable-next-line
     }, [persons])
 
+    // Initializing the add person inputs with an empty person
     const emptyPerson = {
         name: '',
         number: ''
@@ -55,14 +63,26 @@ const App = () => {
     const addPerson = (e) => {
         e.preventDefault();
         if(!persons.find(person => person.name === newPerson.name)) {
-            setPersons(persons.concat({...newPerson}))
+            // setPersons(persons.concat({...newPerson}))
+            phonebookService.create(newPerson)
+                .then(fetchedPerson => {
+                    setPersons(persons.concat({...fetchedPerson}))
+                })
         } else {
             alert(`A person named ${newPerson.name} is already in the phonebook!`)
         }
         setNewPerson(emptyPerson)
     }
 
+    const deletePerson = (id) => {
+        if (window.confirm(`Remove ${persons.find(person => person.id === id).name} from the phonebook?`)) {
+            phonebookService.remove(id)
+                .then(() => setPersons(persons.filter(person => person.id !== id)))
+        }
+    }
+
     const filterText = (e) => {
+        // Allows for visible list to update when adding new person 
         if (e === undefined || e.target.value === "") {
             setPersonsToShow(persons)
         } else {
@@ -88,7 +108,7 @@ const App = () => {
                 }}
             />
             <h2>Numbers</h2>
-            <List list={personsToShow} />
+            <List list={personsToShow} handleClick={deletePerson} />
         </div>
     )
 }
