@@ -62,14 +62,18 @@ const App = () => {
     const [newPerson, setNewPerson] = useState(emptyPerson)
     const addPerson = (e) => {
         e.preventDefault();
-        if(!persons.find(person => person.name === newPerson.name)) {
+        const thisPerson = persons.find(person => person.name === newPerson.name)
+        if (!thisPerson) {
             // setPersons(persons.concat({...newPerson}))
             phonebookService.create(newPerson)
                 .then(fetchedPerson => {
-                    setPersons(persons.concat({...fetchedPerson}))
+                    setPersons(persons.concat(fetchedPerson))
                 })
         } else {
-            alert(`A person named ${newPerson.name} is already in the phonebook!`)
+            if (window.confirm(`Update ${thisPerson.name}'s number from ${thisPerson.number} to ${newPerson.number}?`)) {
+                phonebookService.update(thisPerson.id, newPerson)
+                    .then((fetchedPerson) => setPersons(persons.map(person => person.id !== fetchedPerson.id ? person : fetchedPerson)))
+            }
         }
         setNewPerson(emptyPerson)
     }
