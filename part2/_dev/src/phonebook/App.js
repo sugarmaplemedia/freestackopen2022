@@ -1,5 +1,18 @@
 import { useEffect, useState } from 'react'
+import './index.css'
 import phonebookService from './services/phonebook'
+
+const Notification = ({ message, good = false }) => {
+    if (message === null || message === "") {
+        return null
+    }
+    
+    return (
+        <div className={good ? 'good' : 'error'}>
+            {message}
+        </div>
+    )
+}
 
 const Filter = ({ handleFunction }) => (
     <div>
@@ -60,6 +73,10 @@ const App = () => {
         number: ''
     }
     const [newPerson, setNewPerson] = useState(emptyPerson)
+
+    //Notification state
+    const [notification, setNotification] = useState(["", false])
+
     const addPerson = (e) => {
         e.preventDefault();
         const thisPerson = persons.find(person => person.name === newPerson.name)
@@ -68,11 +85,15 @@ const App = () => {
             phonebookService.create(newPerson)
                 .then(fetchedPerson => {
                     setPersons(persons.concat(fetchedPerson))
+                    setNotification([`${fetchedPerson.name} has been added to the phonebook.`, true])
                 })
         } else {
             if (window.confirm(`Update ${thisPerson.name}'s number from ${thisPerson.number} to ${newPerson.number}?`)) {
                 phonebookService.update(thisPerson.id, newPerson)
-                    .then((fetchedPerson) => setPersons(persons.map(person => person.id !== fetchedPerson.id ? person : fetchedPerson)))
+                    .then((fetchedPerson) => {
+                        setPersons(persons.map(person => person.id !== fetchedPerson.id ? person : fetchedPerson))
+                        setNotification([`${fetchedPerson.name}'s phonebook entry has been updated`, true])
+                    })
             }
         }
         setNewPerson(emptyPerson)
@@ -81,7 +102,10 @@ const App = () => {
     const deletePerson = (id) => {
         if (window.confirm(`Remove ${persons.find(person => person.id === id).name} from the phonebook?`)) {
             phonebookService.remove(id)
-                .then(() => setPersons(persons.filter(person => person.id !== id)))
+                .then(() => {
+                    setNotification([`${persons.filter(person => person.id === id)[0].name}'s phonebook entry has been removed`, true])
+                    setPersons(persons.filter(person => person.id !== id) )
+                })
         }
     }
 
@@ -100,6 +124,7 @@ const App = () => {
     return (
         <div>
             <h1>Phonebook</h1>
+            <Notification message={notification[0]} good={notification[1]} />
             <Filter handleFunction={filterText} />
             <h2>Add new</h2>
             <AddNewPerson

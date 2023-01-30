@@ -1,19 +1,14 @@
 {
   "persons": [
     {
-      "name": "John smith",
-      "number": "906-399-7469",
-      "id": 5
+      "name": "Bruh",
+      "number": "Tuh",
+      "id": 10
     },
     {
-      "name": "Nandy",
-      "number": "jnsn",
-      "id": 6
-    },
-    {
-      "name": "Bambana",
-      "number": "cde",
-      "id": 7
+      "name": "Yayay",
+      "number": "Yayaya!",
+      "id": 11
     }
   ]
 }
