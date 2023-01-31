@@ -49,9 +49,7 @@ const App = () => {
                 })
         } else if (countriesShown.length === 1) {
             axios.get(`https://restcountries.com/v3.1/name/${countriesShown[0]}?fullText=true`)
-                .then(res => {
-                    setCountryContent(res.data[0])
-                })
+                .then(res => setCountryContent(res.data[0]))
         }
         // eslint-disable-next-line
     }, [countriesShown])
