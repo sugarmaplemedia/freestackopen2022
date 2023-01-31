@@ -17,8 +17,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "notes-server": "json-server -p3001 --watch src/notes/db.json",
-    "phonebook-server": "json-server -p3001 --watch src/phonebook/db.json"
-
+    "phonebook-server": "json-server -p3001 --watch src/phonebook/db.json",
+    "countries-server": "json-server -p3001 --watch src/countries/db.json"
   },
   "eslintConfig": {
     "extends": [
