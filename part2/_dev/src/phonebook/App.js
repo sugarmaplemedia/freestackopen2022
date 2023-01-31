@@ -94,6 +94,7 @@ const App = () => {
                         setPersons(persons.map(person => person.id !== fetchedPerson.id ? person : fetchedPerson))
                         setNotification([`${fetchedPerson.name}'s phonebook entry has been updated`, true])
                     })
+                    .catch((error) =>  setNotification([`${JSON.parse(error.config.data).name}'s entry has already been removed`, false]) )
             }
         }
         setNewPerson(emptyPerson)
