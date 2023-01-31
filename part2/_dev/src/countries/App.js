@@ -28,7 +28,6 @@ const App = () => {
         if (e.type === "change") {
             setQuery(e.target.value)
         } else {
-            console.log(e)
             setQuery(e)
         }
     }
