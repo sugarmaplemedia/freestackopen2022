@@ -8,10 +8,10 @@ const Filter = ({handleInput, inputValue}) => (
 )
 
 const Country = ({handleClick, children}) => (
-    <>
-        <span onClick={handleClick}>{children}</span>
-        <br />
-    </>
+    <div>
+        <span>{children} </span>
+        <button onClick={() => handleClick(children)}>show</button>
+    </div>
 )
 
 const App = () => {
@@ -28,8 +28,8 @@ const App = () => {
         if (e.type === "change") {
             setQuery(e.target.value)
         } else {
-            e.preventDefault()
-            setQuery(e.target.innerText)
+            console.log(e)
+            setQuery(e)
         }
     }
     const [countriesShown, setCountriesShown] = useState([])
