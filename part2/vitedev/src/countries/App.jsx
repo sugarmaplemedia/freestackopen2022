@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 
+import CountryContent from "./components/CountryContent"
+
 const Filter = ({handleInput, inputValue}) => (
     <div>
         Find countries: <input onChange={handleInput} value={inputValue} />
     </div>
 )
 
-const Country = ({handleClick, children}) => (
+const CountryEntry = ({handleClick, children}) => (
     <div>
         <span>{children} </span>
         <button onClick={() => handleClick(children)}>show</button>
@@ -57,20 +59,11 @@ const App = () => {
         <div>
             <Filter handleInput={handleQuery} inputValue={query} />
             {countriesShown.length <= 10
-                ? <pre>{countriesShown.map(country => <Country key={country} handleClick={handleQuery}>{country}</Country>)}</pre>
+                ? <pre>{countriesShown.map(country => <CountryEntry key={country} handleClick={handleQuery}>{country}</CountryEntry>)}</pre>
                 : <span>There are too many countries with this substring. Please refine your query.</span>
             }
             {countryContent === null ? null : (
-                <div>
-                    <h1>{countryContent.name.common}</h1>
-                    <p>Capital: {countryContent.capital[0]}</p>
-                    <p>Population: {countryContent.population}</p>
-                    <h2>{Object.keys(countryContent.languages).length === 1 ? "Language" : "Languages"}</h2>
-                    <ul>
-                        {Object.entries(countryContent.languages).map(([key,value]) => <li key={key}>{value}</li>)}
-                    </ul>
-                    <img src={countryContent.flags.svg} alt={`Flag of ${countryContent.name.common}`} style={{"width": 500}} />
-                </div>
+                <CountryContent country={countryContent}/>
             )}
             
             {/* <List />
