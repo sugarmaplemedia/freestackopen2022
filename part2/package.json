@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "vite build && del ..\\part3\\frontend && move .\\dist ..\\part3\\frontend",
     "preview": "vite preview",
     "notes-server": "json-server -p3001 --watch src/notes/db.json",
     "phonebook-server": "json-server -p3001 --watch src/phonebook/db.json",
